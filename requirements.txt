@@ -1,0 +1,18 @@
+# Core data processing and scientific computing
+numpy>=1.19.2
+pandas>=1.2.0
+scikit-learn>=0.24.0
+
+# Deep Learning and Graph Neural Networks
+torch>=1.9.0
+torch-geometric>=2.0.0
+
+# Visualization and analysis
+matplotlib>=3.3.0
+
+# Utilities
+tqdm>=4.50.0
+
+# Optional but recommended
+networkx>=2.5
+pytest>=6.2.0
