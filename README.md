@@ -1,113 +1,177 @@
-# GNN-Based Health Engagement System
+# Pregnancy App GNN: User Segmentation & Nudge Recommendation
 
-A Graph Neural Network (GNN) based system for personalizing health engagement nudges in the Avegen HealthMachine platform.
+A Graph Neural Network system for pregnancy app user engagement prediction and personalized behavioral nudge recommendations.
 
-## Project Overview
+## 🎯 Project Overview
 
-This project implements an AI-driven engagement system using Graph Neural Networks to improve patient engagement through personalized nudges. The system learns from user interactions, health metrics, and engagement patterns to recommend the most effective engagement strategies.
+This project implements a state-of-the-art GNN-based system that:
+- **Classifies users** into 5 engagement segments (Low, Moderate, High, Health Focused, Content Consumer)
+- **Recommends personalized nudges** from 5 behavioral intervention categories
+- **Leverages graph relationships** between users, segments, and nudges for improved predictions
+- **Provides interpretable results** with detailed segment and nudge descriptions
 
-### Key Features
+## 🏗️ Project Structure
 
-- GNN-based user-segment-nudge relationship modeling
-- Dynamic user engagement tracking
-- Personalized nudge recommendations
-- Inductive learning capabilities for new users
-- Sliding window training for temporal adaptation
+```
+Avegen_Gnn/
+├── 📄 DOCUMENTATION.md          # Comprehensive 5-page technical documentation
+├── 📄 README.md                 # This file
+├── 📄 requirements.txt          # Python dependencies
+├── 📄 LICENSE                   # MIT License
+├── 📄 .gitignore               # Git ignore rules
+│
+├── 🧠 Core Implementation
+│   ├── gnn_model_pyg.py        # GNN architecture with bi-interaction aggregation
+│   ├── train_pyg.py            # Training pipeline with BPR loss
+│   ├── predict_pyg.py          # Inference pipeline for segments & nudges
+│   ├── data_preprocessing.py   # Feature engineering and normalization
+│   └── graph_construction.py   # Graph building and edge weight calculation
+│
+├── 📊 Data & Models
+│   ├── synthetic_pregnancy_app_data.csv  # Synthetic user behavior dataset
+│   ├── best_model_pyg.pt       # Trained model weights
+│   ├── training_pyg.log        # Training history and metrics
+│   ├── graph_visualization.png # Graph structure visualization
+│   └── preprocessed_data/      # Processed features and encoders
+│
+└── 📚 Documentation
+    └── data_notions/
+        └── preprocessed_dataframe_structure.txt  # Feature documentation
+```
 
-## Architecture
+## 🚀 Quick Start
 
-The system uses a multi-layer GNN with:
-- User nodes (engagement + health features)
-- Segment nodes (user groupings)
-- Nudge nodes (engagement actions)
-- Message passing layers with Xavier initialization
-- Attention mechanisms for feature weighting
-
-## Installation
-
+### 1. Setup Environment
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/avegen-gnn.git
-cd avegen-gnn
+# Clone repository
+git clone <repository-url>
+cd Avegen_Gnn
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-## Project Structure
-
-```
-avegen-gnn/
-├── data/
-│   ├── preprocessing.py
-│   └── simulation.py
-├── models/
-│   ├── gnn.py
-│   └── layers.py
-├── training/
-│   ├── trainer.py
-│   └── evaluation.py
-├── utils/
-│   └── graph_construction.py
-├── requirements.txt
-└── README.md
-```
-
-## Usage
-
-```python
-from models.gnn import GNN
-from training.trainer import train_model
-
-# Initialize model
-model = GNN(
-    user_dim=6,
-    segment_dim=10,
-    nudge_dim=15,
-    hidden_dim=64
-)
+### 2. Run the Pipeline
+```bash
+# Preprocess data (if needed)
+python -c "from data_preprocessing import DataPreprocessor; DataPreprocessor().preprocess()"
 
 # Train model
-train_model(model, train_data, val_data)
+python train_pyg.py
+
+# Make predictions
+python predict_pyg.py
 ```
 
-## Model Details
+### 3. Example Prediction Output
+```python
+{
+    'user_segments': [
+        {
+            'segment': 'Health Focused',
+            'probability': 0.85,
+            'description': 'Users primarily interested in health tracking...'
+        }
+    ],
+    'recommended_nudges': [
+        {
+            'nudge_type': 'NUDGE_2_PERSONALIZED_TIPS',
+            'confidence': 0.92,
+            'description': 'Custom health tips based on your current trimester...'
+        }
+    ]
+}
+```
 
-The GNN architecture includes:
-- Input Layer: Processes user (6D), segment, and nudge features
-- Message Passing Layers: Transform and propagate node information
-- Xavier Initialization: Optimized weight initialization
-- Output Layer: Generates engagement predictions
+## 🔬 Technical Highlights
 
-## Training Approaches
+### Graph Neural Network Architecture
+- **Bi-Interaction Aggregation**: Captures both additive and multiplicative feature interactions
+- **Multi-Task Learning**: Simultaneous segment classification and nudge recommendation
+- **Attention Mechanism**: Feature-based edge weighting for improved relationships
+- **PyTorch Geometric**: Efficient graph operations and message passing
 
-1. **Full Training**
-   - Complete model training on all available data
-   - Used for initial model setup
+### Key Features
+- **5 User Segments**: Low/Moderate/High Engagement, Health Focused, Content Consumer
+- **5 Nudge Categories**: Reminders, Progress Feedback, Tips, Goal Setting, Social Cues
+- **Scalable Design**: Handles large user bases with efficient graph operations
+- **Interpretable Results**: Clear descriptions for segments and nudge recommendations
 
-2. **Sliding Window**
-   - Maintains recent data window
-   - Updates model with new user interactions
+### Model Performance
+- **Architecture**: 128→64→32 hidden dimensions with bi-interaction convolution
+- **Training**: BPR loss with negative sampling, Adam optimizer (lr=0.0005)
+- **Regularization**: Dropout (0.2), gradient clipping, L2 regularization
+- **Early Stopping**: Patience-based validation monitoring
 
-3. **Inductive Learning**
-   - Handles new users and segments
-   - Adapts to changing engagement patterns
+## 📖 Documentation
 
-## Results
+For detailed technical documentation including:
+- **Theoretical foundations** of GNNs and multi-task learning
+- **Complete data pipeline** and preprocessing steps
+- **Architecture details** and mathematical formulations
+- **Training procedures** and hyperparameter configurations
+- **Deployment guidelines** and future enhancements
 
-- Improved user engagement metrics
-- Better nudge targeting
-- Dynamic adaptation to user behavior
+👉 **See [DOCUMENTATION.md](DOCUMENTATION.md)** for the comprehensive 5-page technical guide.
 
-## Contributing
+## 🛠️ Key Components
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+### Core Files
+- **`gnn_model_pyg.py`**: GNN model with bi-interaction convolution and multi-task heads
+- **`train_pyg.py`**: Training loop with BPR loss and negative sampling
+- **`predict_pyg.py`**: Inference pipeline with segment classification and nudge recommendation
+- **`data_preprocessing.py`**: Feature engineering, normalization, and encoding
+- **`graph_construction.py`**: Graph construction with user-segment-nudge relationships
 
-## License
+### Data Pipeline
+1. **Raw Data**: Synthetic pregnancy app user behavior (1000+ users, 40+ features)
+2. **Preprocessing**: Missing value handling, outlier treatment, feature engineering
+3. **Graph Construction**: User-segment-nudge heterogeneous graph with attention weights
+4. **Training**: BPR loss optimization with negative sampling
+5. **Prediction**: Multi-task inference for segments and nudges
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 🔮 Future Enhancements
 
-## Contact
+### Technical
+- **Temporal GNNs**: Time-aware user behavior modeling
+- **Heterogeneous Message Passing**: Different aggregation for different node types
+- **Dynamic Graphs**: Real-time edge weight updates
+- **Federated Learning**: Privacy-preserving distributed training
 
-Your Name - your.email@example.com
-Project Link: https://github.com/yourusername/avegen-gnn 
+### Business
+- **A/B Testing**: Nudge effectiveness measurement
+- **Real-time Personalization**: Dynamic recommendation updates
+- **Multi-modal Features**: Text, image, and sensor data integration
+- **Causal Inference**: Understanding intervention effectiveness
+
+## 📊 Results
+
+The current model demonstrates:
+- **Effective Segmentation**: Clear user categorization into meaningful engagement groups
+- **Relevant Nudges**: Contextual behavioral intervention recommendations
+- **Scalable Architecture**: Efficient handling of large user bases
+- **Interpretable Output**: Actionable insights for product teams
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📧 Contact
+
+For questions, suggestions, or collaboration opportunities, please open an issue or reach out to the development team.
+
+---
+
+**Built with ❤️ for improving pregnancy health outcomes through intelligent user engagement** 

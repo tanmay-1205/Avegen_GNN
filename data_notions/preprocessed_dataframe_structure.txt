@@ -1,0 +1,140 @@
+Preprocessed DataFrame Structure Documentation
+==========================================
+
+This document outlines the structure of our preprocessed dataframe used in the GNN-based engagement prediction system.
+
+1. Basic User Information
+------------------------
+- user_id: Sequential IDs starting from 0
+- age: Normalized age calculated from date of birth (StandardScaler)
+- age_group: Categorized into ['18-24', '25-30', '31-35', '36-40', '40+'] (LabelEncoded)
+
+2. Location Information
+----------------------
+- city: Major Indian cities (LabelEncoded)
+  Values: Mumbai, Delhi, Bangalore, Chennai, Kolkata, Pune, Hyderabad
+- city_tier: City classification (LabelEncoded)
+  Values: Metro, Tier 1
+
+3. Health Metrics
+----------------
+- bmi: Calculated BMI value (StandardScaler)
+- bmi_category: BMI classification (LabelEncoded)
+  Values: ['Underweight', 'Normal', 'Overweight', 'Obese']
+- selected_height: Height in cm (StandardScaler)
+- selected_weight: Weight in kg (StandardScaler)
+- trimester: Pregnancy trimester (LabelEncoded)
+  Values: ['First', 'Second', 'Third']
+- risk_level: Pregnancy risk assessment (LabelEncoded)
+  Values: ['Low', 'Medium', 'High']
+- conditions: Medical conditions (LabelEncoded)
+  Values: ['None', 'Gestational Diabetes', 'Thyroid', 'Anemia', 'Hypertension', 'Back Pain/Spondylitis', 'Low Lying Placenta']
+- previous_pregnancies: Number of previous pregnancies (StandardScaler)
+- pregnancy_experience: Experience level (LabelEncoded)
+  Values: ['First Time', 'Second Time', 'Experienced']
+
+4. Engagement Metrics (All StandardScaler normalized)
+--------------------------------------------------
+- session_start_count: Number of app sessions
+- watch_now_count: Video content views
+- community_opened_count: Community section visits
+- hamburger_menu_nearby_hospitals_click_count: Hospital search interactions
+- courses_screen_view_count: Course page views
+- self_assessment_card_button_click_count: Self-assessment interactions
+- course_start_tap_count: Course initiations
+- health_tracking_submission_count: Health data submissions
+- view_tracking_questions_click_home_scre_count: Health tracking interactions
+- cr_card_tap_count: Card interactions
+- week_content_share_app_click_count: Content sharing actions
+- herstore_opened_count: Store section visits
+- herhealth_opened_count: Health section visits
+
+5. Derived Engagement Metrics (All StandardScaler normalized)
+---------------------------------------------------------
+- total_engagement_score: Composite score from key engagement metrics
+- content_interaction_ratio: (content interactions) / (total sessions)
+- community_engagement_ratio: (community interactions) / (total sessions)
+- health_tracking_ratio: (health tracking activities) / (total sessions)
+- activity_consistency: (active days) / (30 days)
+- engagement_trend: (recent engagement) / (total engagement)
+- health_engagement_score: Combined score from health tracking activities
+
+6. Temporal Features (All StandardScaler normalized)
+------------------------------------------------
+- days_since_last_session: Days elapsed since last app use
+- days_since_last_health_check: Days since last health tracking
+- average_session_duration: Session length in minutes
+- notification_response_count: Notification interactions
+- content_completion_count: Completed content items
+
+7. Technical Information (LabelEncoded)
+------------------------------------
+- device_type: Device platform
+  Values: ['iOS', 'Android']
+- app_version: Application version
+  Values: ['1.0.0', '1.1.0', '1.2.0']
+
+8. User Attributes
+-----------------
+- selected_occupation: User's occupation (LabelEncoded)
+  Values: ['Working Professional', 'Homemaker', 'Self Employed', 'Student', 'Other']
+- selected_reasons: Reason for using app (LabelEncoded)
+  Values: ['First Pregnancy', 'Second Pregnancy', 'Health Monitoring', 'General Wellness', 'Normal Delivery', 'Pregnancy Fitness', 'Emotional Support', 'Feel Prepared', 'Pregnancy Nutrition', 'Other']
+- health_records_uploaded: Binary indicator (0/1)
+
+Data Preprocessing Pipeline
+=========================
+
+1. Missing Value Treatment
+-------------------------
+- Numerical columns: Filled with median values
+- Categorical columns: Filled with mode values
+
+2. Outlier Handling
+------------------
+- Method: IQR (Interquartile Range)
+- Lower bound = Q1 - 1.5 * IQR
+- Upper bound = Q3 + 1.5 * IQR
+- Values outside bounds are capped
+
+3. Feature Scaling
+-----------------
+- Numerical features: StandardScaler (mean=0, std=1)
+- Ensures all features are on same scale
+- Scalers are saved for consistent transformation during prediction
+
+4. Categorical Encoding
+----------------------
+- Method: LabelEncoder
+- Converts categorical values to numerical indices
+- Encoders are saved for consistent transformation
+
+5. Feature Engineering
+---------------------
+- Calculated BMI from height and weight
+- Created engagement ratios and scores
+- Generated temporal features
+- Binned continuous variables into categories where appropriate
+
+GNN Model Features
+=================
+For the GNN model, the data is further processed into a 6-dimensional feature vector for each user node:
+
+1. Five Key Engagement Metrics:
+   - session_start_count
+   - watch_now_count
+   - community_opened_count
+   - health_tracking_submission_count
+   - content_completion_count
+
+2. Health Metric:
+   - bmi
+
+File Storage
+===========
+- Preprocessed data: 'preprocessed_data.csv'
+- Preprocessing objects:
+  - Scalers: saved as 'scalers.npy'
+  - Label Encoders: saved as 'label_encoders.npy'
+
+Note: All preprocessing transformations are reversible using the saved preprocessing objects, enabling interpretation of model outputs in original feature space. 
